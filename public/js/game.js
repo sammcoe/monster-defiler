@@ -1,11 +1,12 @@
 /* global Phaser RemotePlayer io */
+var MonsterDefiler = MonsterDefiler || {};
 
-var game = new Phaser.Game("100", "100", Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render })
+MonsterDefiler.game = new Phaser.Game("100", "100", Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render })
 
 function preload () {
-  game.load.image('earth', 'assets/light_sand.png')
-  game.load.spritesheet('dude', 'assets/dude.png', 64, 64)
-  game.load.spritesheet('enemy', 'assets/dude.png', 64, 64)
+  MonsterDefiler.game.load.image('earth', 'assets/light_sand.png')
+  MonsterDefiler.game.load.spritesheet('dude', 'assets/dude.png', 64, 64)
+  MonsterDefiler.game.load.spritesheet('enemy', 'assets/dude.png', 64, 64)
 }
 
 var socket // Socket connection
@@ -23,23 +24,23 @@ function create () {
   socket = io.connect()
 
   // Resize our game world to be a 2000 x 2000 square
-  game.world.setBounds(-500, -500, 4000, 400)
+  MonsterDefiler.game.world.setBounds(-500, -500, 4000, 400)
 
   // Our tiled scrolling background
-  land = game.add.tileSprite(0, 0, 2000, 2000, 'earth')
+  land = MonsterDefiler.game.add.tileSprite(0, 0, 2000, 2000, 'earth')
   land.fixedToCamera = true
 
   // The base of our player
   var startX = Math.round(Math.random() * (1000) - 500)
   var startY = Math.round(Math.random() * (1000) - 500)
-  player = game.add.sprite(startX, startY, 'dude')
+  player = MonsterDefiler.game.add.sprite(startX, startY, 'dude')
   player.anchor.setTo(0.5, 0.5)
   player.animations.add('move', [0, 1, 2, 3, 4, 5, 6, 7], 20, true)
   player.animations.add('stop', [3], 20, true)
 
   // This will force it to decelerate and limit its speed
   // player.body.drag.setTo(200, 200)
-  game.physics.enable(player, Phaser.Physics.ARCADE);
+  MonsterDefiler.game.physics.enable(player, Phaser.Physics.ARCADE);
   player.body.maxVelocity.setTo(400, 400)
   player.body.collideWorldBounds = true
 
@@ -48,11 +49,11 @@ function create () {
 
   player.bringToTop()
 
-  game.camera.follow(player)
-  game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 500)
-  game.camera.focusOnXY(0, 0)
+  MonsterDefiler.game.camera.follow(player)
+  MonsterDefiler.game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 500)
+  MonsterDefiler.game.camera.focusOnXY(0, 0)
 
-  cursors = game.input.keyboard.createCursorKeys()
+  cursors = MonsterDefiler.game.input.keyboard.createCursorKeys()
 
   // Start listening for events
   setEventHandlers()
@@ -106,7 +107,7 @@ function onNewPlayer (data) {
   }
 
   // Add new player to the remote players array
-  enemies.push(new RemotePlayer(data.id, game, player, data.x, data.y, data.angle))
+  enemies.push(new RemotePlayer(data.id, MonsterDefiler.game, player, data.x, data.y, data.angle))
 }
 
 // Move player
@@ -145,7 +146,7 @@ function update () {
   for (var i = 0; i < enemies.length; i++) {
     if (enemies[i].alive) {
       enemies[i].update()
-      game.physics.arcade.collide(player, enemies[i].player)
+      MonsterDefiler.game.physics.arcade.collide(player, enemies[i].player)
     }
   }
 
@@ -164,7 +165,7 @@ function update () {
     }
   }
 
-  game.physics.arcade.velocityFromRotation(player.rotation, currentSpeed, player.body.velocity)
+  MonsterDefiler.game.physics.arcade.velocityFromRotation(player.rotation, currentSpeed, player.body.velocity)
 
   if (currentSpeed > 0) {
     player.animations.play('move')
@@ -172,14 +173,14 @@ function update () {
     player.animations.play('stop')
   }
 
-  land.tilePosition.x = -game.camera.x
-  land.tilePosition.y = -game.camera.y
+  land.tilePosition.x = -MonsterDefiler.game.camera.x
+  land.tilePosition.y = -MonsterDefiler.game.camera.y
 
-  if (game.input.activePointer.isDown) {
-    if (game.physics.arcade.distanceToPointer(player) >= 10) {
+  if (MonsterDefiler.game.input.activePointer.isDown) {
+    if (MonsterDefiler.game.physics.arcade.distanceToPointer(player) >= 10) {
       currentSpeed = 300
 
-      player.rotation = game.physics.arcade.angleToPointer(player)
+      player.rotation = MonsterDefiler.game.physics.arcade.angleToPointer(player)
     }
   }
 

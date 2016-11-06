@@ -5,7 +5,7 @@ var RemotePlayer = function (index, game, player, startX, startY, startAngle) {
   var y = startY
   var angle = startAngle
 
-  this.game = game
+  this.game = MonsterDefiler.game
   this.health = 3
   this.player = player
   this.alive = true
