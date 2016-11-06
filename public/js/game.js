@@ -1,6 +1,6 @@
 /* global Phaser RemotePlayer io */
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render })
+var game = new Phaser.Game("100", "100", Phaser.AUTO, '', { preload: preload, create: create, update: update, render: render })
 
 function preload () {
   game.load.image('earth', 'assets/light_sand.png')
@@ -23,10 +23,10 @@ function create () {
   socket = io.connect()
 
   // Resize our game world to be a 2000 x 2000 square
-  game.world.setBounds(-500, -500, 1000, 1000)
+  game.world.setBounds(-500, -500, 4000, 400)
 
   // Our tiled scrolling background
-  land = game.add.tileSprite(0, 0, 800, 600, 'earth')
+  land = game.add.tileSprite(0, 0, 2000, 2000, 'earth')
   land.fixedToCamera = true
 
   // The base of our player
@@ -49,7 +49,7 @@ function create () {
   player.bringToTop()
 
   game.camera.follow(player)
-  game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 300)
+  game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 500)
   game.camera.focusOnXY(0, 0)
 
   cursors = game.input.keyboard.createCursorKeys()
